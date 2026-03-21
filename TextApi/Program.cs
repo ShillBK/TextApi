@@ -1,22 +1,36 @@
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// ✅ Always enable Swagger
+// Swagger middleware
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// ❌ Remove HTTPS redirection
-// app.UseHttpsRedirection();
+// Root endpoint
+app.MapGet("/", () => Results.Ok(new
+{
+    name = "Text API",
+    version = "1.0",
+    endpoints = new[]
+    {
+        "/api/text/uppercase"
+    }
+}));
 
-app.UseAuthorization();
+// API endpoint
+app.MapPost("/api/text/uppercase", (dynamic req) =>
+{
+    string input = req.inputText;
 
-app.MapControllers();
-
-app.MapGet("/", () => "Text API is running 🚀");
+    return Results.Ok(new
+    {
+        original = input,
+        uppercased = input.ToUpper()
+    });
+});
 
 app.Run();
