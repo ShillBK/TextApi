@@ -17,4 +17,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/", () => "Text API is running 🚀");
+
 app.Run();
